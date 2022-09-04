@@ -1,0 +1,268 @@
+:root {
+    --background-color: rgb(49, 46, 43);
+
+    --black-square-color: linear-gradient(rgb(118, 150, 86), rgb(118, 150, 86));
+    --black-square-active-color: linear-gradient(rgb(186, 202, 43), rgb(186, 202, 43));
+    --black-square-hover-color: linear-gradient(rgb(207, 218, 196), rgb(207, 218, 196));
+    --black-square-active-hover-color: linear-gradient(rgb(231, 237, 181), rgb(231, 237, 181));
+
+    --white-square-color: linear-gradient(rgb(238, 238, 210), rgb(238, 238, 210));
+    --white-square-active-color: linear-gradient(rgb(246, 246, 105), rgb(246, 246, 105));
+    --white-square-hover-color: linear-gradient(rgb(249, 249, 239), rgb(249, 249, 239));
+    --white-square-active-hover-color: linear-gradient(rgb(252, 252, 203), rgb(252, 252, 203));
+
+    --square-hint-color: rgba(0, 0, 0, .1);
+
+    --promotion-window-close-button-color: #F1F1F1;
+    --promotion-window-close-button-font-color: #8C8A88;
+    --promotion-window-border-radius: calc(.5vmin);
+}
+
+* {
+    box-sizing: border-box;
+    margin: 0;
+    padding: 0;
+}
+
+html, body {
+    width: 100%;
+    height: 100%;
+    font-size: calc(2.7vmin);
+}
+
+img {
+    user-drag: none;
+    -webkit-user-drag: none;
+    user-select: none;
+    -moz-user-select: none;
+    -webkit-user-select: none;
+    -ms-user-select: none;
+}
+
+body {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    background-color: var(--background-color);
+}
+
+/*Board*/
+#board-wrapper-wrapper {
+    position: relative;
+    width: 100vh;
+    overflow: hidden;
+}
+
+#board-wrapper-wrapper:before {
+    content: "";
+    display: block;
+    padding-top: 100%;
+}
+
+#board-wrapper {
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}
+
+#board {
+    width: 90%;
+    height: 90%;
+    display: grid;
+    grid-template-columns: repeat(8, 1fr);
+    grid-template-rows: repeat(8, 1fr);
+    user-select: none;
+}
+
+/*Squares*/
+chess-square {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    height: 100%;
+    width: 100%;
+    position: relative;
+    padding: .4vw;
+    background-clip: content-box, padding-box;
+}
+
+chess-square.black {
+    color: rgb(238, 238, 210);
+    background-image: var(--black-square-color), var(--black-square-color);
+}
+
+chess-square.white {
+    color: rgb(118, 150, 86);
+    background-image: var(--white-square-color), var(--white-square-color);
+}
+
+/*Side numbers*/
+chess-square p {
+    font-family: "Segoe UI", sans-serif;
+    position: absolute;
+    padding: 0 3%;
+    font-weight: 500;
+}
+
+chess-square p.rowNumbers {
+    bottom: 0;
+    right: 0;
+}
+
+chess-square p.columnNumbers {
+    top: 0;
+    left: 0;
+}
+
+/*Hints*/
+chess-square .hint, .capture-hint {
+    position: absolute;
+    border-radius: 50%;
+    z-index: 2;
+}
+
+chess-square div.hint {
+    width: 35%;
+    height: 35%;
+    background-color: var(--square-hint-color);
+}
+
+chess-square div.capture-hint {
+    width: 100%;
+    height: 100%;
+    border: calc(1.5vmin) solid var(--square-hint-color);
+    background-color: transparent;
+    cursor: grab;
+}
+
+/*Piece*/
+.piece {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    width: 100%;
+    height: 100%;
+    position: absolute;
+    background-repeat: no-repeat;
+    background-size: contain;
+    cursor: grab;
+    z-index: 1;
+}
+
+chess-pawn.black {
+    background-image: url("../assets/pieces/bp.png");
+}
+
+chess-pawn.white {
+    background-image: url("../assets/pieces/wp.png");
+}
+
+chess-knight.black {
+    background-image: url("../assets/pieces/bn.png");
+}
+
+chess-knight.white {
+    background-image: url("../assets/pieces/wn.png");
+}
+
+chess-bishop.black {
+    background-image: url("../assets/pieces/bb.png");
+}
+
+chess-bishop.white {
+    background-image: url("../assets/pieces/wb.png");
+}
+
+chess-rook.black {
+    background-image: url("../assets/pieces/br.png");
+}
+
+chess-rook.white {
+    background-image: url("../assets/pieces/wr.png");
+}
+
+chess-queen.black {
+    background-image: url("../assets/pieces/bq.png");
+}
+
+chess-queen.white {
+    background-image: url("../assets/pieces/wq.png");
+}
+
+chess-king.black {
+    background-image: url("../assets/pieces/bk.png");
+}
+
+chess-king.white {
+    background-image: url("../assets/pieces/wk.png");
+}
+
+/*Hovers*/
+chess-square.black.hover {
+    background-image: var(--black-square-color), var(--black-square-hover-color);
+}
+
+chess-square.white.hover {
+    background-image: var(--white-square-color), var(--white-square-hover-color);
+}
+
+chess-square.black.currentMove, chess-square.black.previousMove {
+    background-image: var(--black-square-active-color), var(--black-square-active-color);
+}
+
+chess-square.white.currentMove, chess-square.white.previousMove {
+    background-image: var(--white-square-active-color), var(--white-square-active-color);
+}
+
+chess-square.black.currentMove.hover, chess-square.black.previousMove.hover {
+    background-image: var(--black-square-active-color), var(--black-square-active-hover-color)
+}
+
+chess-square.white.currentMove.hover, chess-square.white.previousMove.hover {
+    background-image: var(--white-square-active-color), var(--white-square-active-hover-color)
+}
+
+/*Promotion Menu*/
+.promotion-menu {
+    padding: 0;
+    display: flex;
+    justify-content: space-evenly;
+    align-items: center;
+    flex-direction: column;
+    background: white;
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 450%;
+    border-radius: var(--promotion-window-border-radius);
+    border-width: 0;
+    z-index: 3;
+    box-shadow: calc(1vmin) calc(1vmin) calc(2vmin) rgb(0 0 0 / 45%);
+}
+
+.promotion-menu .piece {
+    position: relative;
+}
+
+.cross {
+    width: 100%;
+    height: 50%;
+    position: relative;
+    cursor: pointer;
+
+    border-bottom-left-radius: var(--promotion-window-border-radius);
+    border-bottom-right-radius: var(--promotion-window-border-radius);
+
+    background-color: var(--promotion-window-close-button-color);
+    color: var(--promotion-window-close-button-font-color);
+
+    display: flex;
+    justify-content: center;
+    align-items: center;
+}
