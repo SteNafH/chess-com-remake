@@ -43,11 +43,12 @@ class Square extends HTMLElement {
         return capture;
     }
 
-    addPromotionMenu(color) {
-        const promotionOrder = [new Queen(color), new Knight(color), new Rook(color), new Bishop(color)];
+    addPromotionMenu(white) {
+        const promotionOrder = [new Queen(white), new Knight(white), new Rook(white), new Bishop(white)];
 
         const promotionDiv = document.createElement("div");
-        promotionDiv.classList.add("promotion-menu")
+        promotionDiv.classList.add("promotion-menu");
+        promotionDiv.classList.add(white ? "white" : "black");
 
         for (let i = 0; i < 4; i++) {
             let div = promotionOrder[i];
@@ -60,6 +61,7 @@ class Square extends HTMLElement {
         p.classList.add("cross");
 
         promotionDiv.appendChild(p);
+
         this.appendChild(promotionDiv);
 
         return new Promise((resolve) => {
@@ -77,14 +79,13 @@ class Square extends HTMLElement {
         })
     }
 
-    //TODO either create a custom hint element, or check here whether square should have a capture hint, by checking current piece status.
-    addCaptureHint() {
-        this.hint.className = "capture-hint";
-        this.appendChild(this.hint);
-    }
+    addHint(white) {
+        if (this.piece !== null) {
+            this.hint.className = this.piece.white === white ? "hint" : "capture-hint";
+        } else {
+            this.hint.className = "hint";
+        }
 
-    addHint() {
-        this.hint.className = "hint";
         this.appendChild(this.hint);
     }
 

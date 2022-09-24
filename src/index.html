@@ -35,14 +35,15 @@
 <script src="board.js"></script>
 
 <script>
-    const itemContainer = $('chess-square');
+    const squares = $('chess-square');
+    const itemContainer = squares;
 
     let currentHints = [];
     let currentActive;
     let previousMove;
 
     itemContainer.sortable({
-        connectWith: $('chess-square'),
+        connectWith: squares,
         containment: $('#board-wrapper'),
         items: $('.piece'),
         cursor: "grabbing",
@@ -59,37 +60,43 @@
             e.target.classList.remove("hover");
         },
         receive: function (e, ui) {
-            if (!e.target.querySelectorAll(".hint, .capture-hint").length) {
-                ui.sender.sortable("cancel");
+            const newPos = e.target;
+            const prevPos = ui.sender;
+            const piece = ui.item[0];
+
+            if (!newPos.querySelectorAll(".hint, .capture-hint").length) {
+                prevPos.sortable("cancel");
                 return;
             }
 
-            if (ui.item[0] instanceof Pawn && (e.target.y === 7 || e.target.y === 0)) {
+            if (piece instanceof Pawn && (newPos.y === 7 || newPos.y === 0)) {
                 clearCurrentHints();
-                e.target.addPromotionMenu(ui.item[0].white).then(function (value) {
-                    if (value === undefined) {
-                        ui.sender.sortable("cancel");
+                newPos.addPromotionMenu(piece.white).then(function (piece) {
+                    if (piece === undefined) {
+                        prevPos.sortable("cancel");
                     } else {
-                        value.classList.remove("promotion-option");
-                        makeMove(ui.sender[0], e.target, value);
+                        piece.classList.remove("promotion-option");
+                        makeMove(prevPos[0], newPos, piece);
                         resetOnClick();
                     }
                 });
 
             } else {
-                makeMove(ui.sender[0], e.target, ui.item[0]);
+                makeMove(prevPos[0], newPos, piece);
             }
         }
     });
 
     function resetOnClick() {
-        $('.piece').on("click", function (e) {
+        let pieces = $('.piece');
+
+        pieces.on("click", function (e) {
             clearCurrentHints();
             clearCurrentActive();
             getMoves(e.target.parentNode);
         });
 
-        itemContainer.sortable("option", "items", $('.piece'));
+        itemContainer.sortable("option", "items", pieces);
     }
 
     resetOnClick();
@@ -99,6 +106,9 @@
         let capture = newPos.removePiece();
         newPos.addPiece(piece);
         playSound(capture);
+
+        let king = $('chess-king.white');
+        king[0].isInCheck();
 
         removeEnPassant();
         checkEnPassant(prevPos, newPos, piece);
@@ -119,11 +129,7 @@
         currentActive = square;
 
         for (let move of moves) {
-            if (move.capture) {
-                move.square.addCaptureHint();
-            } else {
-                move.square.addHint();
-            }
+            move.square.addHint(piece.white);
 
             $(move.square).on("click", function () {
                 const newPos = this;

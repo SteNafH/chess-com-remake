@@ -30,8 +30,8 @@ class Piece extends HTMLElement {
         let currentPiece = board[y][x].piece;
 
         for (let i = 1; i < 8; i++) {
-            let moveX = x - (xDelta * i);
-            let moveY = y - (yDelta * i);
+            let moveX = x + (xDelta * i);
+            let moveY = y + (yDelta * i);
 
             if (this.checkOutOfBounds(moveX, moveY)) break;
 

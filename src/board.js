@@ -92,3 +92,5 @@ function printBoard() {
 
     console.log(...boardString)
 }
+
+//board[4][4].addPiece(new King(true));
