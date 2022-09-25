@@ -1,4 +1,8 @@
 class King extends Piece {
+    kingMoves = [
+        {x: -1, y: 1}, {x: 0, y: 1}, {x: 1, y: 1}, {x: -1, y: 0},
+        {x: 1, y: 0}, {x: -1, y: -1}, {x: 0, y: -1}, {x: 1, y: -1}
+    ];
 
     constructor(white) {
         super(white);
@@ -12,39 +16,76 @@ class King extends Piece {
         let x = parseInt(_x);
         let y = parseInt(_y);
 
+        let possibleMoves = [];
+        for (let move of this.kingMoves) {
+            let moveY = y + move.y;
+            let moveX = x + move.x;
 
-        return "";
+            let checkedSquare = this.checkSquare(moveX, moveY);
+
+            if (typeof checkedSquare === 'boolean') continue;
+
+            possibleMoves.push(checkedSquare);
+        }
+
+        return possibleMoves;
     }
 
-    isInCheck() {
-        let x = this.parentNode.x;
-        let y = this.parentNode.y;
+    isCheck(prevPos, newPos) {
+        prevPos.piece = null;
+        let newPosPiece = newPos.piece;
+        newPos.piece = this;
 
-        console.log(this.isInCheckAdjacent(x, y, -1, 1, Pawn, King))
-        console.log(this.isInCheckAdjacent(x, y, 0, 1, King))
-        console.log(this.isInCheckAdjacent(x, y, 1, 1, Pawn, King))
-        console.log(this.isInCheckAdjacent(x, y, -1, 0, King))
-        console.log(this.isInCheckAdjacent(x, y, 1, 0, King,))
-        console.log(this.isInCheckAdjacent(x, y, -1, -1, Pawn, King))
-        console.log(this.isInCheckAdjacent(x, y, 0, -1, King))
-        console.log(this.isInCheckAdjacent(x, y, 1, -1, Pawn, King))
+        //printBoard();
 
-        console.log(this.isInCheckLine(x, y, -1, 1, Bishop, Queen));
-        console.log(this.isInCheckLine(x, y, 1, -1, Bishop, Queen));
-        console.log(this.isInCheckLine(x, y, -1, -1, Bishop, Queen));
-        console.log(this.isInCheckLine(x, y, 1, 1, Bishop, Queen));
+        let check = this.isInCheck(newPos);
 
-        console.log(this.isInCheckLine(x, y, 0, 1, Rook, Queen));
-        console.log(this.isInCheckLine(x, y, -1, 0, Rook, Queen));
-        console.log(this.isInCheckLine(x, y, 1, 0, Rook, Queen));
-        console.log(this.isInCheckLine(x, y, 0, -1, Rook, Queen));
+        prevPos.piece = this;
+        newPos.piece = newPosPiece;
+
+        return check;
+    }
+
+    isInCheck(kingSquare = this.parentNode) {
+        let x = kingSquare.x;
+        let y = kingSquare.y;
+
+        if (this.isInCheckAdjacent(x, y, 2, -1, Knight)) return true;
+        if (this.isInCheckAdjacent(x, y, 2, 1, Knight)) return true;
+        if (this.isInCheckAdjacent(x, y, 1, -2, Knight)) return true;
+        if (this.isInCheckAdjacent(x, y, 1, 2, Knight)) return true;
+        if (this.isInCheckAdjacent(x, y, -2, -1, Knight)) return true;
+        if (this.isInCheckAdjacent(x, y, -2, 1, Knight)) return true;
+        if (this.isInCheckAdjacent(x, y, -1, -2, Knight)) return true;
+        if (this.isInCheckAdjacent(x, y, -1, 2, Knight)) return true;
+
+        if (this.isInCheckAdjacent(x, y, -1, 1, Pawn, King)) return true;
+        if (this.isInCheckAdjacent(x, y, 0, 1, King)) return true;
+        if (this.isInCheckAdjacent(x, y, 1, 1, Pawn, King)) return true;
+        if (this.isInCheckAdjacent(x, y, -1, 0, King)) return true;
+        if (this.isInCheckAdjacent(x, y, 1, 0, King,)) return true;
+        if (this.isInCheckAdjacent(x, y, -1, -1, Pawn, King)) return true;
+        if (this.isInCheckAdjacent(x, y, 0, -1, King)) return true;
+        if (this.isInCheckAdjacent(x, y, 1, -1, Pawn, King)) return true;
+
+        if (this.isInCheckLine(x, y, -1, 1, Bishop, Queen)) return true;
+        if (this.isInCheckLine(x, y, 1, -1, Bishop, Queen)) return true;
+        if (this.isInCheckLine(x, y, -1, -1, Bishop, Queen)) return true;
+        if (this.isInCheckLine(x, y, 1, 1, Bishop, Queen)) return true;
+
+        if (this.isInCheckLine(x, y, 0, 1, Rook, Queen)) return true;
+        if (this.isInCheckLine(x, y, -1, 0, Rook, Queen)) return true;
+        if (this.isInCheckLine(x, y, 1, 0, Rook, Queen)) return true;
+        if (this.isInCheckLine(x, y, 0, -1, Rook, Queen)) return true;
+
+        return false;
     }
 
     isInCheckAdjacent(x, y, xDelta, yDelta, ...possiblePieces) {
         let moveX = x + xDelta;
         let moveY = y + yDelta;
 
-        let check = this.isCheck(moveX, moveY, possiblePieces);
+        let check = this.isInCheckSquare(moveX, moveY, possiblePieces);
         return !!check;
     }
 
@@ -53,7 +94,7 @@ class King extends Piece {
             let moveX = x + (xDelta * i);
             let moveY = y + (yDelta * i);
 
-            let check = this.isCheck(moveX, moveY, possiblePieces);
+            let check = this.isInCheckSquare(moveX, moveY, possiblePieces);
 
             if (check === null) continue;
 
@@ -65,7 +106,7 @@ class King extends Piece {
         return false;
     }
 
-    isCheck(moveX, moveY, possiblePieces) {
+    isInCheckSquare(moveX, moveY, possiblePieces) {
         if (this.checkOutOfBounds(moveX, moveY)) return false;
 
         let newPosition = board[moveY][moveX];

@@ -9,8 +9,7 @@
     <script type="text/javascript" src="../libraries/jquery-2.2.2/http_code.jquery.com_jquery-2.2.2.js"></script>
     <script type="text/javascript" src="../libraries/jquery-ui/http_code.jquery.com_ui_1.11.4_jquery-ui.js"></script>
     <script type="text/javascript" src="../libraries/jquery-ui-touch-punch/jquery.ui.touch-punch.min.js"></script>
-    <script type="text/javascript"
-            src="../libraries/gsap/http_cdnjs.cloudflare.com_ajax_libs_gsap_1.20.4_TweenMax.min.js"></script>
+    <script type="text/javascript" src="../libraries/gsap/http_cdnjs.cloudflare.com_ajax_libs_gsap_1.20.4_TweenMax.min.js"></script>
 </head>
 <style>
 
@@ -25,9 +24,9 @@
 
 <script src="pieces/piece.js"></script>
 <script src="pieces/pawn.js"></script>
-<script src="pieces/rook.js"></script>
-<script src="pieces/bishop.js"></script>
 <script src="pieces/knight.js"></script>
+<script src="pieces/bishop.js"></script>
+<script src="pieces/rook.js"></script>
 <script src="pieces/queen.js"></script>
 <script src="pieces/king.js"></script>
 
@@ -37,6 +36,20 @@
 <script>
     const squares = $('chess-square');
     const itemContainer = squares;
+    const moveType = {
+        capture: '../assets/sound/capture.webm',
+        castle: '../assets/sound/castle.webm',
+        gameEnd: '../assets/sound/game-end.webm',
+        gameStart: '../assets/sound/game-start.webm',
+        illegal: '../assets/sound/illegal.webm',
+        moveCheck: '../assets/sound/move-check.webm',
+        moveOpponent: '../assets/sound/move-opponent.webm',
+        moveSelf: '../assets/sound/move-self.webm',
+        promote: '../assets/sound/promote.webm'
+    }
+
+    let enemyKing;
+    let king;
 
     let currentHints = [];
     let currentActive;
@@ -76,13 +89,13 @@
                         prevPos.sortable("cancel");
                     } else {
                         piece.classList.remove("promotion-option");
-                        makeMove(prevPos[0], newPos, piece);
+                        makeMove(prevPos[0], newPos, piece, moveType.promote);
                         resetOnClick();
                     }
                 });
 
             } else {
-                makeMove(prevPos[0], newPos, piece);
+                makeMove(prevPos[0], newPos, piece, newPos.piece === null ? moveType.moveSelf : moveType.capture);
             }
         }
     });
@@ -101,14 +114,14 @@
 
     resetOnClick();
 
-    function makeMove(prevPos, newPos, piece) {
+    function makeMove(prevPos, newPos, piece, type) {
         prevPos.removePiece();
-        let capture = newPos.removePiece();
+        newPos.removePiece();
         newPos.addPiece(piece);
-        playSound(capture);
 
-        let king = $('chess-king.white');
-        king[0].isInCheck();
+        if (enemyKing.isInCheck()) type = moveType.moveCheck;
+
+        new Audio(type).play();
 
         removeEnPassant();
         checkEnPassant(prevPos, newPos, piece);
@@ -120,8 +133,16 @@
         printBoard();
     }
 
+    function getKing(white) {
+        return $('chess-king.' + (white ? 'white' : 'black'))[0];
+    }
+
     function getMoves(square) {
         let piece = square.piece;
+
+        enemyKing = getKing(!piece.white);
+        king = getKing(piece.white);
+
         let moves = piece.getMoves(square.y, square.x);
         let rect = piece.getBoundingClientRect();
 
@@ -144,12 +165,12 @@
                             prevPos.appendChild(piece);
                         } else {
                             value.classList.remove("promotion-option");
-                            makeMove(prevPos, newPos, value);
+                            makeMove(prevPos, newPos, value, moveType.promote);
                             resetOnClick();
                         }
                     });
                 } else {
-                    makeMove(prevPos, newPos, piece);
+                    makeMove(prevPos, newPos, piece, move.capture ? moveType.capture : moveType.moveSelf);
 
                     TweenMax.set(piece, {x: 0, y: 0});
 
@@ -204,14 +225,6 @@
         if (currentEnPassant.piece === null) return;
 
         if (currentEnPassant.piece.getPieceLetter === "e") currentEnPassant.piece = null;
-    }
-
-    function playSound(capture) {
-        if (capture) {
-            new Audio("../assets/sound/capture.webm").play();
-        } else {
-            new Audio("../assets/sound/move-self.webm").play();
-        }
     }
 
     function swapPreviousMove(prevPos, newPos) {

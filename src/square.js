@@ -35,12 +35,8 @@ class Square extends HTMLElement {
     }
 
     removePiece() {
-        let capture = this.piece !== null;
-
-        if (capture) this.piece.remove();
+        if (this.piece !== null) this.piece.remove();
         this.piece = null;
-
-        return capture;
     }
 
     addPromotionMenu(white) {

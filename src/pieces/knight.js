@@ -18,24 +18,14 @@ class Knight extends Piece {
 
         let possibleMoves = [];
         for (let move of this.knightMoves) {
-            let row = y + move.y;
-            let column = x + move.x;
+            let moveY = y + move.y;
+            let moveX = x + move.x;
 
-            if (row < 0 || column < 0 || column > 7 || row > 7) continue;
+            let checkedSquare = this.checkSquare(moveX, moveY);
 
-            let newPosition = board[row][column];
+            if (typeof checkedSquare === 'boolean') continue;
 
-            if (newPosition.piece !== null && newPosition.piece.white === this.white) continue;
-
-            let capture = false;
-            if (newPosition.piece !== null && newPosition.piece.white !== this.white) capture = true;
-
-            let currentMove = {
-                square: newPosition,
-                capture: capture
-            }
-
-            possibleMoves.push(currentMove);
+            possibleMoves.push(checkedSquare);
         }
 
         return possibleMoves;

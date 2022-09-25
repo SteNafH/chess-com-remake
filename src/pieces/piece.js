@@ -27,27 +27,56 @@ class Piece extends HTMLElement {
 
     checkLine(x, y, xDelta, yDelta) {
         let possibleMoves = [];
-        let currentPiece = board[y][x].piece;
 
         for (let i = 1; i < 8; i++) {
             let moveX = x + (xDelta * i);
             let moveY = y + (yDelta * i);
 
-            if (this.checkOutOfBounds(moveX, moveY)) break;
+            let checkedSquare = this.checkSquare(moveX, moveY);
 
-            let newPosition = board[moveY][moveX];
+            if (!checkedSquare) break;
+            else if (checkedSquare === true) continue;
 
-            if (newPosition.piece === null) {
-                possibleMoves.push({square: newPosition, capture: false});
-                continue;
-            }
-
-            if (newPosition.piece.white !== currentPiece.white) {
-                possibleMoves.push({square: newPosition, capture: true});
-            }
-            break;
+            possibleMoves.push(checkedSquare)
         }
 
         return possibleMoves;
+    }
+
+    checkSquare(moveX, moveY) {
+        if (this.checkOutOfBounds(moveX, moveY)) return false;
+
+        let newPos = board[moveY][moveX];
+
+        if (newPos.piece === null || newPos.piece.getPieceLetter === "e") {
+            if (!this.isCheck(this.parentNode, newPos))
+                return {square: newPos, capture: false};
+            else
+                return true;
+        }
+
+        if (newPos.piece.white !== this.white) {
+            if (!this.isCheck(this.parentNode, newPos))
+                return {square: newPos, capture: true};
+            else
+                return true;
+        }
+
+        return false;
+    }
+
+    isCheck(prevPos, newPos) {
+        prevPos.piece = null;
+        let newPosPiece = newPos.piece;
+        newPos.piece = this;
+
+        //printBoard();
+
+        let check = king.isInCheck();
+
+        prevPos.piece = this;
+        newPos.piece = newPosPiece;
+
+        return check;
     }
 }
