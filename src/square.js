@@ -75,12 +75,8 @@ class Square extends HTMLElement {
         })
     }
 
-    addHint(white) {
-        if (this.piece !== null) {
-            this.hint.className = this.piece.white === white ? "hint" : "capture-hint";
-        } else {
-            this.hint.className = "hint";
-        }
+    addHint() {
+        this.hint.className = (this.piece instanceof Piece) ? "capture-hint" : "hint";
 
         this.appendChild(this.hint);
     }

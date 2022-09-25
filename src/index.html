@@ -224,7 +224,7 @@
 
         if (currentEnPassant.piece === null) return;
 
-        if (currentEnPassant.piece.getPieceLetter === "e") currentEnPassant.piece = null;
+        if (!(currentEnPassant.piece instanceof Piece)) currentEnPassant.piece = null;
     }
 
     function swapPreviousMove(prevPos, newPos) {

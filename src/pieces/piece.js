@@ -38,6 +38,8 @@ class Piece extends HTMLElement {
             else if (checkedSquare === true) continue;
 
             possibleMoves.push(checkedSquare)
+
+            if (checkedSquare.capture) break;
         }
 
         return possibleMoves;
@@ -48,7 +50,7 @@ class Piece extends HTMLElement {
 
         let newPos = board[moveY][moveX];
 
-        if (newPos.piece === null || newPos.piece.getPieceLetter === "e") {
+        if (!(newPos.piece instanceof Piece)) {
             if (!this.isCheck(this.parentNode, newPos))
                 return {square: newPos, capture: false};
             else

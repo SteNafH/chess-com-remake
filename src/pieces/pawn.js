@@ -29,7 +29,7 @@ class Pawn extends Piece {
             let newPosition = board[y + yDelta][x + 1];
             if (newPosition.piece !== null && newPosition.piece.white !== this.white) {
                 if (!this.isCheck(this.parentNode, newPosition))
-                    possibleMoves.push({square: newPosition, capture: newPosition.piece.getPieceLetter !== "e"});
+                    possibleMoves.push({square: newPosition, capture: newPosition.piece instanceof Piece});
             }
         }
 
@@ -38,7 +38,7 @@ class Pawn extends Piece {
 
             if (newPosition.piece !== null && newPosition.piece.white !== this.white) {
                 if (!this.isCheck(this.parentNode, newPosition))
-                    possibleMoves.push({square: newPosition, capture: newPosition.piece.getPieceLetter !== "e"});
+                    possibleMoves.push({square: newPosition, capture: newPosition.piece instanceof Piece});
             }
         }
 
