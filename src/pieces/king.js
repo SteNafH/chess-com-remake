@@ -3,6 +3,10 @@ class King extends Piece {
         {x: -1, y: 1}, {x: 0, y: 1}, {x: 1, y: 1}, {x: -1, y: 0},
         {x: 1, y: 0}, {x: -1, y: -1}, {x: 0, y: -1}, {x: 1, y: -1}
     ];
+    knightMoves = [
+        {x: 2, y: -1}, {x: 2, y: 1}, {x: 1, y: -2}, {x: 1, y: 2},
+        {x: -2, y: -1}, {x: -2, y: 1}, {x: -1, y: -2}, {x: -1, y: 2}
+    ];
 
     constructor(white) {
         super(white);
@@ -50,33 +54,32 @@ class King extends Piece {
         let x = kingSquare.x;
         let y = kingSquare.y;
 
-        if (this.isInCheckAdjacent(x, y, 2, -1, Knight)) return true;
-        if (this.isInCheckAdjacent(x, y, 2, 1, Knight)) return true;
-        if (this.isInCheckAdjacent(x, y, 1, -2, Knight)) return true;
-        if (this.isInCheckAdjacent(x, y, 1, 2, Knight)) return true;
-        if (this.isInCheckAdjacent(x, y, -2, -1, Knight)) return true;
-        if (this.isInCheckAdjacent(x, y, -2, 1, Knight)) return true;
-        if (this.isInCheckAdjacent(x, y, -1, -2, Knight)) return true;
-        if (this.isInCheckAdjacent(x, y, -1, 2, Knight)) return true;
+        for (let knightMove of this.knightMoves) {
+            if (this.isInCheckAdjacent(x, y, knightMove.x, knightMove.y, Knight)) return true;
+        }
 
-        if (this.isInCheckAdjacent(x, y, -1, 1, Pawn, King)) return true;
-        if (this.isInCheckAdjacent(x, y, 0, 1, King)) return true;
-        if (this.isInCheckAdjacent(x, y, 1, 1, Pawn, King)) return true;
-        if (this.isInCheckAdjacent(x, y, -1, 0, King)) return true;
-        if (this.isInCheckAdjacent(x, y, 1, 0, King,)) return true;
-        if (this.isInCheckAdjacent(x, y, -1, -1, Pawn, King)) return true;
-        if (this.isInCheckAdjacent(x, y, 0, -1, King)) return true;
-        if (this.isInCheckAdjacent(x, y, 1, -1, Pawn, King)) return true;
+        for (let kingMove of this.kingMoves) {
+            if (kingMove.x !== 0 && kingMove.y !== 0) {
+                if (this.isInCheckLine(x, y, kingMove.x, kingMove.y, Bishop, Queen)) return true;
 
-        if (this.isInCheckLine(x, y, -1, 1, Bishop, Queen)) return true;
-        if (this.isInCheckLine(x, y, 1, -1, Bishop, Queen)) return true;
-        if (this.isInCheckLine(x, y, -1, -1, Bishop, Queen)) return true;
-        if (this.isInCheckLine(x, y, 1, 1, Bishop, Queen)) return true;
-
-        if (this.isInCheckLine(x, y, 0, 1, Rook, Queen)) return true;
-        if (this.isInCheckLine(x, y, -1, 0, Rook, Queen)) return true;
-        if (this.isInCheckLine(x, y, 1, 0, Rook, Queen)) return true;
-        if (this.isInCheckLine(x, y, 0, -1, Rook, Queen)) return true;
+                if (kingMove.y === -1) {
+                    if (this.white) {
+                        if (this.isInCheckAdjacent(x, y, kingMove.x, kingMove.y, King)) return true;
+                    } else {
+                        if (this.isInCheckAdjacent(x, y, kingMove.x, kingMove.y, Pawn, King)) return true;
+                    }
+                } else {
+                    if (this.white) {
+                        if (this.isInCheckAdjacent(x, y, kingMove.x, kingMove.y, Pawn, King)) return true;
+                    } else {
+                        if (this.isInCheckAdjacent(x, y, kingMove.x, kingMove.y, King)) return true;
+                    }
+                }
+            } else {
+                if (this.isInCheckLine(x, y, kingMove.x, kingMove.y, Rook, Queen)) return true;
+                if (this.isInCheckAdjacent(x, y, kingMove.x, kingMove.y, King)) return true;
+            }
+        }
 
         return false;
     }

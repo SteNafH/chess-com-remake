@@ -62,8 +62,6 @@
         cursor: "grabbing",
         tolerance: "pointer",
         start: function (e) {
-            clearCurrentHints();
-            clearCurrentActive();
             getMoves(e.target);
         },
         over: function (e) {
@@ -104,12 +102,19 @@
         let pieces = $('.piece');
 
         pieces.on("click", function (e) {
-            clearCurrentHints();
-            clearCurrentActive();
             getMoves(e.target.parentNode);
         });
 
         itemContainer.sortable("option", "items", pieces);
+
+        $('body').on("click", function (e) {
+            if (e.target instanceof Piece) return;
+
+            if (!(e.target.classList.contains('hint') || e.target.classList.contains('captureHint'))) {
+                clearCurrentHints();
+                clearCurrentActive();
+            }
+        });
     }
 
     resetOnClick();
@@ -120,7 +125,6 @@
         newPos.addPiece(piece);
 
         if (enemyKing.isInCheck()) type = moveType.moveCheck;
-
         new Audio(type).play();
 
         removeEnPassant();
@@ -138,6 +142,17 @@
     }
 
     function getMoves(square) {
+        if (square === currentActive) {
+            if (arguments.callee.caller.name === 'start') return;
+
+            clearCurrentHints();
+            clearCurrentActive();
+            return;
+        }
+
+        clearCurrentHints();
+        clearCurrentActive();
+
         let piece = square.piece;
 
         enemyKing = getKing(!piece.white);
@@ -194,6 +209,7 @@
             hint.square.removeHint();
             $(hint.square).unbind("click");
         }
+
         currentHints = [];
     }
 
