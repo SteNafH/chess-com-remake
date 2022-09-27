@@ -3,23 +3,30 @@
 <head>
     <meta charset="UTF-8">
     <title>Title</title>
+
+    <link href='https://fonts.googleapis.com/css?family=Montserrat:wght@700;800' rel='stylesheet'>
     <link rel="stylesheet" href="styles.css">
     <link rel="shortcut icon" href="#">
 
     <script type="text/javascript" src="../libraries/jquery-2.2.2/http_code.jquery.com_jquery-2.2.2.js"></script>
     <script type="text/javascript" src="../libraries/jquery-ui/http_code.jquery.com_ui_1.11.4_jquery-ui.js"></script>
     <script type="text/javascript" src="../libraries/jquery-ui-touch-punch/jquery.ui.touch-punch.min.js"></script>
-    <script type="text/javascript" src="../libraries/gsap/http_cdnjs.cloudflare.com_ajax_libs_gsap_1.20.4_TweenMax.min.js"></script>
+    <script type="text/javascript"
+            src="../libraries/gsap/http_cdnjs.cloudflare.com_ajax_libs_gsap_1.20.4_TweenMax.min.js"></script>
 </head>
 <style>
 
 </style>
 <body>
-<div id="board-wrapper-wrapper">
+<main>
     <div id="board-wrapper">
         <div id="board"></div>
     </div>
-</div>
+
+    <div>
+        <button onclick="rotateBoard()">f</button>
+    </div>
+</main>
 </body>
 
 <script src="pieces/piece.js"></script>
@@ -34,6 +41,12 @@
 <script src="board.js"></script>
 
 <script>
+    let playerTurn = true;
+    let currentPlayer = true;
+
+    let boardRotation = currentPlayer;
+    showBoard();
+
     const squares = $('chess-square');
     const itemContainer = squares;
     const moveType = {
@@ -72,11 +85,11 @@
         },
         receive: function (e, ui) {
             const newPos = e.target;
-            const prevPos = ui.sender;
+            const prevPos = ui.sender[0];
             const piece = ui.item[0];
 
             if (!newPos.querySelectorAll(".hint, .capture-hint").length) {
-                prevPos.sortable("cancel");
+                ui.sender.sortable("cancel");
                 return;
             }
 
@@ -84,16 +97,16 @@
                 clearCurrentHints();
                 newPos.addPromotionMenu(piece.white).then(function (piece) {
                     if (piece === undefined) {
-                        prevPos.sortable("cancel");
+                        ui.sender.sortable("cancel");
                     } else {
                         piece.classList.remove("promotion-option");
-                        makeMove(prevPos[0], newPos, piece, moveType.promote);
+                        makeMove(prevPos, newPos, piece, moveType.promote);
                         resetOnClick();
                     }
                 });
 
             } else {
-                makeMove(prevPos[0], newPos, piece, newPos.piece === null ? moveType.moveSelf : moveType.capture);
+                makeMove(prevPos, newPos, piece, getDefaultMoveSound(piece, newPos.piece));
             }
         }
     });
@@ -119,28 +132,6 @@
 
     resetOnClick();
 
-    function makeMove(prevPos, newPos, piece, type) {
-        prevPos.removePiece();
-        newPos.removePiece();
-        newPos.addPiece(piece);
-
-        if (enemyKing.isInCheck()) type = moveType.moveCheck;
-        new Audio(type).play();
-
-        removeEnPassant();
-        checkEnPassant(prevPos, newPos, piece);
-
-        swapPreviousMove(prevPos, newPos);
-
-        clearCurrentHints();
-        clearCurrentActive();
-        printBoard();
-    }
-
-    function getKing(white) {
-        return $('chess-king.' + (white ? 'white' : 'black'))[0];
-    }
-
     function getMoves(square) {
         if (square === currentActive) {
             if (arguments.callee.caller.name === 'start') return;
@@ -153,16 +144,18 @@
         clearCurrentHints();
         clearCurrentActive();
 
+        square.classList.add("currentMove");
+        currentActive = square;
+
         let piece = square.piece;
+
+        if (piece.white !== playerTurn) return;
 
         enemyKing = getKing(!piece.white);
         king = getKing(piece.white);
 
         let moves = piece.getMoves(square.y, square.x);
         let rect = piece.getBoundingClientRect();
-
-        square.classList.add("currentMove");
-        currentActive = square;
 
         for (let move of moves) {
             move.square.addHint(piece.white);
@@ -185,7 +178,7 @@
                         }
                     });
                 } else {
-                    makeMove(prevPos, newPos, piece, move.capture ? moveType.capture : moveType.moveSelf);
+                    makeMove(prevPos, newPos, piece, getDefaultMoveSound(piece, newPos.piece));
 
                     TweenMax.set(piece, {x: 0, y: 0});
 
@@ -202,6 +195,27 @@
         }
 
         currentHints = moves;
+    }
+
+    function makeMove(prevPos, newPos, piece, type) {
+        prevPos.removePiece();
+        newPos.removePiece();
+        newPos.addPiece(piece);
+
+        if (enemyKing.isInCheck()) type = moveType.moveCheck;
+        new Audio(type).play();
+
+        removeEnPassant();
+        checkEnPassant(prevPos, newPos, piece);
+
+        swapPreviousMove(prevPos, newPos);
+
+        clearCurrentHints();
+        clearCurrentActive();
+
+        playerTurn = !playerTurn;
+
+        printBoard();
     }
 
     function clearCurrentHints() {
@@ -255,6 +269,28 @@
             prevPos: prevPos,
             newPos: newPos,
         }
+    }
+
+    function getKing(white) {
+        return $('chess-king.' + (white ? 'white' : 'black'))[0];
+    }
+
+    function getDefaultMoveSound(piece, newSquarePiece) {
+        if (newSquarePiece === null)
+            if (piece.white === currentPlayer)
+                return moveType.moveSelf;
+            else
+                return moveType.moveOpponent;
+        else
+            return moveType.capture;
+    }
+
+    function rotateBoard() {
+        boardRotation = !boardRotation;
+
+        showBoard(boardRotation);
+
+        printBoard()
     }
 
     printBoard();

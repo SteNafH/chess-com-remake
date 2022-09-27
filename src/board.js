@@ -34,43 +34,58 @@ board[7][5] = new Square(7, 5, new Bishop(false));
 board[7][6] = new Square(7, 6, new Knight(false));
 board[7][7] = new Square(7, 7, new Rook(false));
 
+function showBoard() {
+    $('chess-square p').remove();
 
-for (let y = 7; y >= 0; y--) {
+    if (boardRotation) {
+        for (let y = 7; y >= 0; y--) {
+            for (let x = 0; x < 8; x++) {
+                const div = getSquareDiv(board[y][x], 0, 0);
 
-    for (let x = 0; x < 8; x++) {
-        const div = board[y][x];
-        div.id = y + "" + x;
-
-        if (y % 2 === 0) {
-            if (x % 2 === 0) {
-                div.classList.add("black");
-            } else {
-                div.classList.add("white");
-            }
-        } else {
-            if (x % 2 === 0) {
-                div.classList.add("white");
-            } else {
-                div.classList.add("black");
+                boardDiv.appendChild(div)
             }
         }
+    } else {
+        for (let y = 0; y < 8; y++) {
+            for (let x = 7; x >= 0; x--) {
+                const div = getSquareDiv(board[y][x], 7, 7);
 
-        if (x === 0) {
-            let p = document.createElement("p");
-            p.innerText = (y + 1).toString();
-            p.classList.add("columnNumbers");
-            div.appendChild(p);
+                boardDiv.appendChild(div)
+            }
         }
-
-        if (y === 0) {
-            let p = document.createElement("p");
-            p.innerText = columns[x];
-            p.classList.add("rowNumbers");
-            div.appendChild(p);
-        }
-
-        boardDiv.appendChild(div)
     }
+}
+
+function getSquareDiv(square, yBreakpoint, xBreakpoint) {
+    if (square.y % 2 === 0) {
+        if (square.x % 2 === 0) {
+            square.classList.add("black");
+        } else {
+            square.classList.add("white");
+        }
+    } else {
+        if (square.x % 2 === 0) {
+            square.classList.add("white");
+        } else {
+            square.classList.add("black");
+        }
+    }
+
+    if (square.x === xBreakpoint) {
+        let p = document.createElement("p");
+        p.innerText = (square.y + 1).toString();
+        p.classList.add("columnNumbers");
+        square.appendChild(p);
+    }
+
+    if (square.y === yBreakpoint) {
+        let p = document.createElement("p");
+        p.innerText = columns[square.x];
+        p.classList.add("rowNumbers");
+        square.appendChild(p);
+    }
+
+    return square;
 }
 
 function printBoard() {
