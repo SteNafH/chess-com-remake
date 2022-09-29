@@ -19,12 +19,15 @@
 </style>
 <body>
 <main>
+
     <div id="board-wrapper">
         <div id="board"></div>
     </div>
 
-    <div>
-        <button onclick="rotateBoard()">f</button>
+    <div id="board-right">
+        <div id="board-right-wrapper">
+            <button onclick="rotateBoard()">f</button>
+        </div>
     </div>
 </main>
 </body>
@@ -70,7 +73,7 @@
 
     itemContainer.sortable({
         connectWith: squares,
-        containment: $('#board-wrapper'),
+        containment: $('#board'),
         items: $('.piece'),
         cursor: "grabbing",
         tolerance: "pointer",
@@ -115,6 +118,8 @@
         let pieces = $('.piece');
 
         pieces.on("click", function (e) {
+            if (e.target.parentNode.querySelectorAll('div.capture-hint').length > 0) return;
+
             getMoves(e.target.parentNode);
         });
 
@@ -123,7 +128,7 @@
         $('body').on("click", function (e) {
             if (e.target instanceof Piece) return;
 
-            if (!(e.target.classList.contains('hint') || e.target.classList.contains('captureHint'))) {
+            if (!(e.target.classList.contains('hint') || e.target.classList.contains('capture-hint'))) {
                 clearCurrentHints();
                 clearCurrentActive();
             }
@@ -202,6 +207,7 @@
         newPos.removePiece();
         newPos.addPiece(piece);
 
+        //TODO solution for audio as a variable instead of requesting the same file over and over again.
         if (enemyKing.isInCheck()) type = moveType.moveCheck;
         new Audio(type).play();
 
@@ -288,9 +294,9 @@
     function rotateBoard() {
         boardRotation = !boardRotation;
 
-        showBoard(boardRotation);
+        showBoard();
 
-        printBoard()
+        //printBoard()
     }
 
     printBoard();

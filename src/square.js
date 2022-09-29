@@ -70,7 +70,7 @@ class Square extends HTMLElement {
                     resolve(e.target);
                 }
                 promotionDiv.remove();
-                $('body').unbind("click");
+                $('body').unbind("click", this);
             });
         })
     }

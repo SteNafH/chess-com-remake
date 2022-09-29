@@ -55,7 +55,12 @@ body {
 }
 
 main {
+    width: 100%;
+    height: 100%;
     display: flex;
+    justify-content: center;
+    align-items: center;
+    overflow: hidden;
 }
 
 button {
@@ -74,8 +79,7 @@ button {
 /*Board*/
 #board-wrapper {
     position: relative;
-    width: 90vmin;
-    overflow: hidden;
+    width: 90vh;
 }
 
 #board-wrapper:before {
@@ -94,6 +98,14 @@ button {
     grid-template-columns: repeat(8, 1fr);
     grid-template-rows: repeat(8, 1fr);
     user-select: none;
+}
+
+#board-right {
+
+}
+
+#board-right-wrapper {
+
 }
 
 /*Squares*/
