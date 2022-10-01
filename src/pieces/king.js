@@ -32,7 +32,68 @@ class King extends Piece {
             possibleMoves.push(checkedSquare);
         }
 
+        if (!this.hasMoved) {
+
+            let castleRight = this.canCastle(x, y, 1);
+            let castleLeft = this.canCastle(x, y, -1);
+
+            if (castleRight !== undefined)
+                possibleMoves.push(castleRight);
+
+            if (castleLeft !== undefined)
+                possibleMoves.push(castleLeft);
+            console.log(castleRight)
+            console.log(castleLeft)
+
+            // for (let i = 1; i < 3; i++) {
+            //     let moveX = x + i;
+            //
+            //     let checkedSquare = this.checkSquare(moveX, y);
+            //
+            //     if (!checkedSquare) break;
+            //     else if (checkedSquare === true) break;
+            //
+            //     if (checkedSquare.capture) break;
+            //
+            //     if (i === 2 && board[y][x + i + 1].piece instanceof Rook && !board[y][x+ i + 1].piece.hasMoved) {
+            //         board[y][x + i].piece = {
+            //             getPieceLetter: "c",
+            //             isWhiteLetter: this.white ? "w" : "b",
+            //             white: this.white,
+            //             remove: () => {
+            //                 if (this.white) {
+            //                     board[y][x + 1].addPiece(board[y][x + i  + 1].piece)
+            //                     board[y][x + i + 1].piece = null;
+            //                 } else {
+            //
+            //                 }
+            //             }
+            //         }
+            //
+            //         possibleMoves.push({square: board[y][x + i], capture: false, sound: moveType.castle})
+            //     }
+            // }
+        }
+
         return possibleMoves;
+    }
+
+    canCastle(x, y, xDelta) {
+        for (let i = 1; i < 3; i++) {
+            let moveX = x + (xDelta * i);
+
+            let checkedSquare = this.checkSquare(moveX, y);
+
+            if (!checkedSquare) break;
+            else if (checkedSquare === true) break;
+
+            if (checkedSquare.capture) break;
+
+            if (i === 2) {
+                checkedSquare.sound = moveType.castle;
+                return checkedSquare;
+            }
+        }
     }
 
     isCheck(prevPos, newPos) {

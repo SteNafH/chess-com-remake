@@ -40,6 +40,7 @@
 <script src="pieces/queen.js"></script>
 <script src="pieces/king.js"></script>
 
+<script src="hint.js"></script>
 <script src="square.js"></script>
 <script src="board.js"></script>
 
@@ -53,15 +54,15 @@
     const squares = $('chess-square');
     const itemContainer = squares;
     const moveType = {
-        capture: '../assets/sound/capture.webm',
-        castle: '../assets/sound/castle.webm',
-        gameEnd: '../assets/sound/game-end.webm',
-        gameStart: '../assets/sound/game-start.webm',
-        illegal: '../assets/sound/illegal.webm',
-        moveCheck: '../assets/sound/move-check.webm',
-        moveOpponent: '../assets/sound/move-opponent.webm',
-        moveSelf: '../assets/sound/move-self.webm',
-        promote: '../assets/sound/promote.webm'
+        capture: new Audio('../assets/sound/capture.webm'),
+        castle: new Audio('../assets/sound/castle.webm'),
+        gameEnd: new Audio('../assets/sound/game-end.webm'),
+        gameStart: new Audio('../assets/sound/game-start.webm'),
+        illegal: new Audio('../assets/sound/illegal.webm'),
+        moveCheck: new Audio('../assets/sound/move-check.webm'),
+        moveOpponent: new Audio('../assets/sound/move-opponent.webm'),
+        moveSelf: new Audio('../assets/sound/move-self.webm'),
+        promote: new Audio('../assets/sound/promote.webm')
     }
 
     let enemyKing;
@@ -90,8 +91,9 @@
             const newPos = e.target;
             const prevPos = ui.sender[0];
             const piece = ui.item[0];
+            const hint = e.target.querySelector('chess-hint');
 
-            if (!newPos.querySelectorAll(".hint, .capture-hint").length) {
+            if (hint === null) {
                 ui.sender.sortable("cancel");
                 return;
             }
@@ -109,7 +111,7 @@
                 });
 
             } else {
-                makeMove(prevPos, newPos, piece, getDefaultMoveSound(piece, newPos.piece));
+                makeMove(prevPos, newPos, piece, hint.move.sound);
             }
         }
     });
@@ -163,7 +165,7 @@
         let rect = piece.getBoundingClientRect();
 
         for (let move of moves) {
-            move.square.addHint(piece.white);
+            move.square.addHint(move);
 
             $(move.square).on("click", function () {
                 const newPos = this;
@@ -183,7 +185,7 @@
                         }
                     });
                 } else {
-                    makeMove(prevPos, newPos, piece, getDefaultMoveSound(piece, newPos.piece));
+                    makeMove(prevPos, newPos, piece, move.sound);
 
                     TweenMax.set(piece, {x: 0, y: 0});
 
@@ -202,14 +204,13 @@
         currentHints = moves;
     }
 
-    function makeMove(prevPos, newPos, piece, type) {
+    function makeMove(prevPos, newPos, piece, sound) {
         prevPos.removePiece();
         newPos.removePiece();
         newPos.addPiece(piece);
 
-        //TODO solution for audio as a variable instead of requesting the same file over and over again.
-        if (enemyKing.isInCheck()) type = moveType.moveCheck;
-        new Audio(type).play();
+        if (enemyKing.isInCheck()) sound = moveType.moveCheck;
+        sound.play();
 
         removeEnPassant();
         checkEnPassant(prevPos, newPos, piece);

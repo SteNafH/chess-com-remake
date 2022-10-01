@@ -149,19 +149,16 @@ chess-square p.columnNumbers {
 }
 
 /*Hints*/
-chess-square div.hint, div.capture-hint {
+chess-hint {
     position: absolute;
     border-radius: 50%;
     z-index: 2;
-}
-
-chess-square div.hint {
     width: 35%;
     height: 35%;
     background-color: var(--square-hint-color);
 }
 
-chess-square div.capture-hint {
+chess-hint.capture {
     width: 100%;
     height: 100%;
     border: calc(1vmin) solid var(--square-hint-color);

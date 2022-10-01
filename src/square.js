@@ -1,5 +1,5 @@
 class Square extends HTMLElement {
-    hint = document.createElement("div");
+    hint = document.createElement("chess-hint");
 
     constructor(y, x, piece) {
         super();
@@ -17,6 +17,7 @@ class Square extends HTMLElement {
     addPiece(piece) {
         this.appendChild(piece);
         this.piece = piece;
+        this.piece.hasMoved = true;
     }
 
     addEnPassant(color) {
@@ -46,8 +47,9 @@ class Square extends HTMLElement {
         promotionDiv.classList.add("promotion-menu");
         promotionDiv.classList.add(white ? "white" : "black");
 
-        for (let i = 0; i < 4; i++) {
+        for (let i = 0; i < promotionOrder.length; i++) {
             let div = promotionOrder[i];
+            div.hasMoved = true;
             div.classList.add("promotion-option")
             promotionDiv.appendChild(div);
         }
@@ -62,7 +64,7 @@ class Square extends HTMLElement {
 
         return new Promise((resolve) => {
             $('body').on("click", function (e) {
-                if (e.target.classList.contains("hint") || e.target.classList.contains("capture-hint")) return;
+                if (e.target instanceof Hint) return;
 
                 if (!e.target.classList.contains("promotion-option")) {
                     resolve();
@@ -75,9 +77,9 @@ class Square extends HTMLElement {
         })
     }
 
-    addHint() {
-        this.hint.className = (this.piece instanceof Piece) ? "capture-hint" : "hint";
-
+    addHint(move) {
+        this.hint.setCapture = this.piece instanceof Piece;
+        this.hint.move = move;
         this.appendChild(this.hint);
     }
 

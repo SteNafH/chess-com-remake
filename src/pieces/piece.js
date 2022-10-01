@@ -2,6 +2,7 @@ class Piece extends HTMLElement {
     constructor(white) {
         super();
         this.white = white;
+        this.hasMoved = false;
     }
 
     connectedCallback() {
@@ -52,14 +53,14 @@ class Piece extends HTMLElement {
 
         if (!(newPos.piece instanceof Piece)) {
             if (!this.isCheck(this.parentNode, newPos))
-                return {square: newPos, capture: false};
+                return {square: newPos, capture: false, sound: currentPlayer === this.white ? moveType.moveSelf : moveType.moveOpponent};
             else
                 return true;
         }
 
         if (newPos.piece.white !== this.white) {
             if (!this.isCheck(this.parentNode, newPos))
-                return {square: newPos, capture: true};
+                return {square: newPos, capture: true, sound: moveType.capture};
             else
                 return true;
         }

@@ -16,12 +16,12 @@ class Pawn extends Piece {
         if (!this.checkOutOfBounds(x, y + yDelta) && board[y + yDelta][x].piece === null) {
             let newPosition = board[y + yDelta][x];
             if (!this.isCheck(this.parentNode, newPosition))
-                possibleMoves.push({square: board[y + yDelta][x], capture: false});
+                possibleMoves.push({square: board[y + yDelta][x], capture: false, sound: currentPlayer === this.white ? moveType.moveSelf : moveType.moveOpponent});
 
-            if ((y === 1 && this.white && board[3][x].piece === null) || (y === 6 && !this.white && board[4][x].piece === null)) {
+            if (!this.hasMoved && board[y + yDelta + yDelta][x].piece === null) {
                 let newPosition = board[y + yDelta + yDelta][x];
                 if (!this.isCheck(this.parentNode, newPosition))
-                    possibleMoves.push({square: newPosition, capture: false});
+                    possibleMoves.push({square: newPosition, capture: false, sound: currentPlayer === this.white ? moveType.moveSelf : moveType.moveOpponent});
             }
         }
 
@@ -29,7 +29,7 @@ class Pawn extends Piece {
             let newPosition = board[y + yDelta][x + 1];
             if (newPosition.piece !== null && newPosition.piece.white !== this.white) {
                 if (!this.isCheck(this.parentNode, newPosition))
-                    possibleMoves.push({square: newPosition, capture: newPosition.piece instanceof Piece});
+                    possibleMoves.push({square: newPosition, capture: newPosition.piece instanceof Piece, sound: moveType.capture});
             }
         }
 
@@ -38,7 +38,7 @@ class Pawn extends Piece {
 
             if (newPosition.piece !== null && newPosition.piece.white !== this.white) {
                 if (!this.isCheck(this.parentNode, newPosition))
-                    possibleMoves.push({square: newPosition, capture: newPosition.piece instanceof Piece});
+                    possibleMoves.push({square: newPosition, capture: newPosition.piece instanceof Piece, sound: moveType.capture});
             }
         }
 
