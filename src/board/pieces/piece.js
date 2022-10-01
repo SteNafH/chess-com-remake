@@ -10,6 +10,10 @@ class Piece extends HTMLElement {
         this.classList.add(this.white ? "white" : "black");
     }
 
+    get isWhiteDirection() {
+        return this.white ? 1 : -1;
+    }
+
     get isWhiteLetter() {
         return this.white ? "w" : "b";
     }
@@ -53,14 +57,14 @@ class Piece extends HTMLElement {
 
         if (!(newPos.piece instanceof Piece)) {
             if (!this.isCheck(this.parentNode, newPos))
-                return {square: newPos, capture: false, sound: currentPlayer === this.white ? moveType.moveSelf : moveType.moveOpponent};
+                return {square: newPos, type: type.default};
             else
                 return true;
         }
 
         if (newPos.piece.white !== this.white) {
             if (!this.isCheck(this.parentNode, newPos))
-                return {square: newPos, capture: true, sound: moveType.capture};
+                return {square: newPos, type: type.capture};
             else
                 return true;
         }

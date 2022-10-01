@@ -1110,8 +1110,8 @@
 
             $.extend(this.offset, {
                 click: { //Where the click happened, relative to the element
-                    left: event.pageX - this.offset.left,
-                    top: event.pageY - this.offset.top
+                    left: this.helper[0].offsetWidth/2,
+                    top: this.helper[0].offsetHeight/2
                 },
                 parent: this._getParentOffset(),
                 relative: this._getRelativeOffset() //This is a relative to absolute position minus the actual position calculation - only used for relative positioned helper
@@ -1451,7 +1451,6 @@
 
         /* Be careful with the following core functions */
         _intersectsWith: function (item) {
-
             var x1 = this.positionAbs.left,
                 x2 = x1 + this.helperProportions.width,
                 y1 = this.positionAbs.top,

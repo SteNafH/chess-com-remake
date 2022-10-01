@@ -7,6 +7,20 @@ class Square extends HTMLElement {
         this.y = y;
         this.x = x;
         this.piece = piece;
+
+        if (this.y % 2 === 0) {
+            if (this.x % 2 === 0) {
+                this.classList.add("black");
+            } else {
+                this.classList.add("white");
+            }
+        } else {
+            if (this.x % 2 === 0) {
+                this.classList.add("white");
+            } else {
+                this.classList.add("black");
+            }
+        }
     }
 
     connectedCallback() {
@@ -26,17 +40,12 @@ class Square extends HTMLElement {
             isWhiteLetter: color ? "w" : "b",
             white: color,
             remove: () => {
-                if (this.piece.white) {
-                    board[this.y + 1][this.x].removePiece();
-                } else {
-                    board[this.y - 1][this.x].removePiece();
-                }
             }
         }
     }
 
     removePiece() {
-        if (this.piece !== null) this.piece.remove();
+        if (this.piece instanceof Piece) this.piece.remove();
         this.piece = null;
     }
 
@@ -64,6 +73,7 @@ class Square extends HTMLElement {
 
         return new Promise((resolve) => {
             $('body').on("click", function (e) {
+                console.log('test1')
                 if (e.target instanceof Hint) return;
 
                 if (!e.target.classList.contains("promotion-option")) {
@@ -72,7 +82,7 @@ class Square extends HTMLElement {
                     resolve(e.target);
                 }
                 promotionDiv.remove();
-                $('body').unbind("click", this);
+                $('body').unbind("click");
             });
         })
     }

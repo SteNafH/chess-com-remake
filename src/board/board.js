@@ -1,4 +1,7 @@
-const boardDiv = document.getElementById("board");
+const content = document.getElementById('content');
+const boardDiv = document.createElement("div");
+boardDiv.id = 'board';
+
 const columns = ["a", "b", "c", "d", "e", "f", "g", "h"];
 
 const board = new Array(8);
@@ -40,37 +43,32 @@ function showBoard() {
     if (boardRotation) {
         for (let y = 7; y >= 0; y--) {
             for (let x = 0; x < 8; x++) {
-                const div = getSquareDiv(board[y][x], 0, 0);
+                let div = getSquareDiv(board[y][x], 0, 0);
 
                 boardDiv.appendChild(div)
             }
         }
+
+        content.appendChild(player2);
+        content.appendChild(boardDiv);
+        content.appendChild(player1);
     } else {
         for (let y = 0; y < 8; y++) {
             for (let x = 7; x >= 0; x--) {
-                const div = getSquareDiv(board[y][x], 7, 7);
+                let div = getSquareDiv(board[y][x], 7, 7);
 
                 boardDiv.appendChild(div)
             }
         }
+
+
+        content.appendChild(player1);
+        content.appendChild(boardDiv);
+        content.appendChild(player2);
     }
 }
 
 function getSquareDiv(square, yBreakpoint, xBreakpoint) {
-    if (square.y % 2 === 0) {
-        if (square.x % 2 === 0) {
-            square.classList.add("black");
-        } else {
-            square.classList.add("white");
-        }
-    } else {
-        if (square.x % 2 === 0) {
-            square.classList.add("white");
-        } else {
-            square.classList.add("black");
-        }
-    }
-
     if (square.x === xBreakpoint) {
         let p = document.createElement("p");
         p.innerText = (square.y + 1).toString();
