@@ -1,7 +1,8 @@
 class Piece extends HTMLElement {
-    constructor(white) {
+    constructor(white, value) {
         super();
         this.white = white;
+        this.value = value;
         this.hasMoved = false;
     }
 
@@ -16,6 +17,10 @@ class Piece extends HTMLElement {
 
     get isWhiteLetter() {
         return this.white ? "w" : "b";
+    }
+
+    get getValue() {
+        return this.value;
     }
 
     get getPieceLetter() {

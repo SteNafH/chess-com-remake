@@ -1,6 +1,6 @@
 class Queen extends Piece{
     constructor(white) {
-        super(white);
+        super(white, 9);
     }
 
     get getPieceLetter() {

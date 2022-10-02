@@ -1,5 +1,5 @@
-const player1 = new Player('../assets/images/players/white.webp', 'Wit', [], true);
-const player2 = new Player('../assets/images/players/black.webp', 'Zwart', [], false);
+const player1 = new Player('../assets/images/players/white.webp', 'Wit', true);
+const player2 = new Player('../assets/images/players/black.webp', 'Zwart', false);
 
 let playerTurn = true;
 let startingPlayer = true;
@@ -174,7 +174,7 @@ function animateMove(rect, piece) {
 
 function makeMove(prevPos, newPos, piece, move) {
     prevPos.removePiece();
-    newPos.removePiece();
+    let capturedPiece = newPos.removePiece();
     newPos.addPiece(piece);
 
     if (enemyKing.isInCheck()) move.type = type.check;
@@ -212,7 +212,7 @@ function makeMove(prevPos, newPos, piece, move) {
             moveSound = sound.castle;
             break;
         case type.enpassant:
-            board[move.square.y - move.square.piece.isWhiteDirection][move.square.x].removePiece();
+            capturedPiece = board[move.square.y - move.square.piece.isWhiteDirection][move.square.x].removePiece();
             moveSound = sound.capture;
             break;
         default:
@@ -228,6 +228,11 @@ function makeMove(prevPos, newPos, piece, move) {
 
     clearCurrentHints();
     clearCurrentActive();
+
+    if (playerTurn)
+        player1.addPiece(capturedPiece, player2);
+    else
+        player2.addPiece(capturedPiece, player1);
 
     playerTurn = !playerTurn;
 

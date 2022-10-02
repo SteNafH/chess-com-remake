@@ -1,6 +1,6 @@
 class Rook extends Piece{
     constructor(white) {
-        super(white);
+        super(white, 5);
     }
 
     get getPieceLetter() {

@@ -1,6 +1,6 @@
 class Bishop extends Piece{
     constructor(white) {
-        super(white);
+        super(white, 3);
     }
 
     get getPieceLetter() {

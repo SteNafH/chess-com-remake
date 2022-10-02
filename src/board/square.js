@@ -45,8 +45,15 @@ class Square extends HTMLElement {
     }
 
     removePiece() {
-        if (this.piece instanceof Piece) this.piece.remove();
+        let piece = null;
+
+        if (this.piece instanceof Piece) {
+            piece = $(this.piece).clone().context;
+            this.piece.remove();
+        }
+
         this.piece = null;
+        return piece;
     }
 
     addPromotionMenu(white) {
@@ -73,12 +80,12 @@ class Square extends HTMLElement {
 
         return new Promise((resolve) => {
             $('body').on("click", function (e) {
-                console.log('test1')
                 if (e.target instanceof Hint) return;
 
                 if (!e.target.classList.contains("promotion-option")) {
                     resolve();
                 } else {
+                    e.target.value = 1;
                     resolve(e.target);
                 }
                 promotionDiv.remove();

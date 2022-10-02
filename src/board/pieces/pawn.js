@@ -1,6 +1,6 @@
 class Pawn extends Piece {
     constructor(white) {
-        super(white);
+        super(white, 1);
     }
 
     get getPieceLetter() {
