@@ -219,7 +219,7 @@ function makeMove(prevPos, newPos, piece, move) {
             moveSound = sound.moveSelf;
     }
 
-    moveSound.play();
+    moveSound.play().then(null);
 
     removeEnPassant();
     checkEnPassant(prevPos, newPos, piece);
@@ -229,10 +229,15 @@ function makeMove(prevPos, newPos, piece, move) {
     clearCurrentHints();
     clearCurrentActive();
 
-    if (playerTurn)
+    if (playerTurn) {
+        player1.timer.pause();
+        player2.timer.resume();
         player1.addPiece(capturedPiece, player2);
-    else
+    } else {
+        player2.timer.pause();
+        player1.timer.resume();
         player2.addPiece(capturedPiece, player1);
+    }
 
     playerTurn = !playerTurn;
 
@@ -300,10 +305,6 @@ function rotateBoard() {
     boardRotation = !boardRotation;
 
     showBoard();
-}
-
-function startGame() {
-    sound.gameStart.play();
 }
 
 printBoard();

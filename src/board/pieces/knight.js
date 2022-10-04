@@ -6,10 +6,7 @@ class Knight extends Piece {
 
     constructor(white) {
         super(white, 3);
-    }
-
-    get getPieceLetter() {
-        return "n";
+        this.pieceLetter = 'n';
     }
 
     getMoves(_y, _x) {

@@ -3,6 +3,7 @@ class Piece extends HTMLElement {
         super();
         this.white = white;
         this.value = value;
+        this.pieceLetter = '';
         this.hasMoved = false;
     }
 
@@ -24,7 +25,7 @@ class Piece extends HTMLElement {
     }
 
     get getPieceLetter() {
-        return "";
+        return this.pieceLetter;
     }
 
     getMoves(y, x) {

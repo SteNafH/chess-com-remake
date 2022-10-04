@@ -85,6 +85,7 @@ class Square extends HTMLElement {
                 if (!e.target.classList.contains("promotion-option")) {
                     resolve();
                 } else {
+                    e.target.pieceLetter = 'p';
                     e.target.value = 1;
                     resolve(e.target);
                 }

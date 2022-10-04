@@ -10,10 +10,7 @@ class King extends Piece {
 
     constructor(white) {
         super(white);
-    }
-
-    get getPieceLetter() {
-        return "k";
+        this.pieceLetter = 'k';
     }
 
     getMoves(_y, _x) {

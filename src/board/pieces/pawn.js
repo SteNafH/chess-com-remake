@@ -1,10 +1,7 @@
 class Pawn extends Piece {
     constructor(white) {
         super(white, 1);
-    }
-
-    get getPieceLetter() {
-        return "p";
+        this.pieceLetter = 'p';
     }
 
     getMoves(_y, _x) {
@@ -17,12 +14,12 @@ class Pawn extends Piece {
             let newPosition = board[y + yDelta][x];
             if (!this.isCheck(this.parentNode, newPosition)) {
                 possibleMoves.push({square: board[y + yDelta][x], type: type.default});
+            }
 
-                if (!this.hasMoved && board[y + yDelta + yDelta][x].piece === null) {
-                    let newPosition = board[y + yDelta + yDelta][x];
-                    if (!this.isCheck(this.parentNode, newPosition))
-                        possibleMoves.push({square: newPosition, type: type.default});
-                }
+            if (!this.hasMoved && board[y + yDelta + yDelta][x].piece === null) {
+                let newPosition = board[y + yDelta + yDelta][x];
+                if (!this.isCheck(this.parentNode, newPosition))
+                    possibleMoves.push({square: newPosition, type: type.default});
             }
         }
 

@@ -1,10 +1,7 @@
 class Rook extends Piece{
     constructor(white) {
         super(white, 5);
-    }
-
-    get getPieceLetter() {
-        return "r";
+        this.pieceLetter = 'r';
     }
 
     getMoves(_y, _x) {

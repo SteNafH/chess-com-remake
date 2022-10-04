@@ -1,10 +1,7 @@
 class Queen extends Piece{
     constructor(white) {
         super(white, 9);
-    }
-
-    get getPieceLetter() {
-        return "q";
+        this.pieceLetter = 'q';
     }
 
     getMoves(_y, _x) {

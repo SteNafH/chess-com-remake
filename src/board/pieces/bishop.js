@@ -1,10 +1,7 @@
 class Bishop extends Piece{
     constructor(white) {
         super(white, 3);
-    }
-
-    get getPieceLetter() {
-        return "b";
+        this.pieceLetter = 'b';
     }
 
     getMoves(_y, _x) {
