@@ -2,20 +2,20 @@ class Timer {
     remaining = new Date(600000);
     paused = true;
     timerId = null;
-    _div;
-    _delay;
+    div;
+    delay;
 
     constructor(div, delay) {
-        this._div = div;
-        this._div.innerText = this.formatTime();
-        this._delay = delay;
+        this.div = div;
+        this.div.innerText = this.formatTime();
+        this.delay = delay;
     }
 
     pause() {
         if (!this.paused) {
             this.clear();
             this.paused = true;
-            this._div.classList.remove('active')
+            this.div.classList.remove('active')
         }
     }
 
@@ -23,7 +23,7 @@ class Timer {
         if (this.paused) {
             this.paused = false;
             this.start();
-            this._div.classList.add('active')
+            this.div.classList.add('active')
         }
     }
 
@@ -38,7 +38,7 @@ class Timer {
 
             if (this.remaining.getMinutes() === 0 && this.remaining.getSeconds() === 0) this.clear();
 
-        }, this._delay);
+        }, this.delay);
     }
 
     formatTime() {
@@ -50,6 +50,6 @@ class Timer {
 
     run() {
         this.remaining = new Date(this.remaining - 1000);
-        this._div.innerText = this.formatTime();
+        this.div.innerText = this.formatTime();
     }
 }

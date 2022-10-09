@@ -104,6 +104,12 @@ class Square extends HTMLElement {
     removeHint() {
         this.hint.remove();
     }
+
+    toString() {
+        if (this.piece === null) return '  ';
+
+        return this.piece.isWhiteLetter + this.piece.getPieceLetter;
+    }
 }
 
 customElements.define('chess-square', Square);

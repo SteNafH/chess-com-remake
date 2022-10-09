@@ -1,109 +1,119 @@
-const content = document.getElementById('content');
-const boardDiv = document.createElement("div");
-boardDiv.id = 'board';
+class Row extends Array {
+    forEach(callback) {
+        for (let i = 0; i < this.length; i++)
+            callback(this[i], i, this);
+    }
 
-const columns = ["a", "b", "c", "d", "e", "f", "g", "h"];
-
-const board = new Array(8);
-
-for (let i = 0; i < board.length; i++) {
-    board[i] = new Array(8);
+    reverseForEach(callback) {
+        for (let i = this.length - 1; i >= 0; i--)
+            callback(this[i], i, this);
+    }
 }
 
-board[0][0] = new Square(0, 0, new Rook(true));
-board[0][1] = new Square(0, 1, new Knight(true));
-board[0][2] = new Square(0, 2, new Bishop(true));
-board[0][3] = new Square(0, 3, new Queen(true));
-board[0][4] = new Square(0, 4, new King(true));
-board[0][5] = new Square(0, 5, new Bishop(true));
-board[0][6] = new Square(0, 6, new Knight(true));
-board[0][7] = new Square(0, 7, new Rook(true));
+class Board extends HTMLElement {
+    columnP = [];
+    rowP = [];
 
-for (let i = 0; i < 8; i++) {
-    board[1][i] = new Square(1, i, new Pawn(true));
-    board[2][i] = new Square(2, i, null);
-    board[3][i] = new Square(3, i, null);
-    board[4][i] = new Square(4, i, null);
-    board[5][i] = new Square(5, i, null);
-    board[6][i] = new Square(6, i, new Pawn(false));
-}
+    constructor(player1, player2) {
+        super();
 
-board[7][0] = new Square(7, 0, new Rook(false));
-board[7][1] = new Square(7, 1, new Knight(false));
-board[7][2] = new Square(7, 2, new Bishop(false));
-board[7][3] = new Square(7, 3, new Queen(false));
-board[7][4] = new Square(7, 4, new King(false));
-board[7][5] = new Square(7, 5, new Bishop(false));
-board[7][6] = new Square(7, 6, new Knight(false));
-board[7][7] = new Square(7, 7, new Rook(false));
+        this.player1 = player1;
+        this.player2 = player2;
 
-function showBoard() {
-    $('chess-square p').remove();
-
-    if (boardRotation) {
-        for (let y = 7; y >= 0; y--) {
-            for (let x = 0; x < 8; x++) {
-                let div = getSquareDiv(board[y][x], 0, 0);
-
-                boardDiv.appendChild(div)
-            }
+        this.length = 8;
+        let colLetters = ['a', 'b', 'c', 'd', 'e', 'f', 'g', 'h']
+        for (let i = 0; i < this.length; i++) {
+            this.columnP.push(this.createP('columnNumbers', i + 1));
+            this.rowP.push(this.createP('rowNumbers', colLetters[i]));
+            this[i] = new Row(8);
         }
 
-        content.appendChild(player2);
-        content.appendChild(boardDiv);
-        content.appendChild(player1);
-    } else {
-        for (let y = 0; y < 8; y++) {
-            for (let x = 7; x >= 0; x--) {
-                let div = getSquareDiv(board[y][x], 7, 7);
+        this.initBoard();
+    }
 
-                boardDiv.appendChild(div)
-            }
+    initBoard() {
+        this[0][0] = new Square(0, 0, new Rook(true));
+        this[0][1] = new Square(0, 1, new Knight(true));
+        this[0][2] = new Square(0, 2, new Bishop(true));
+        this[0][3] = new Square(0, 3, new Queen(true));
+        this[0][4] = new Square(0, 4, new King(true));
+        this[0][5] = new Square(0, 5, new Bishop(true));
+        this[0][6] = new Square(0, 6, new Knight(true));
+        this[0][7] = new Square(0, 7, new Rook(true));
+
+        for (let i = 0; i < 8; i++) {
+            this[1][i] = new Square(1, i, new Pawn(true));
+            this[2][i] = new Square(2, i, null);
+            this[3][i] = new Square(3, i, null);
+            this[4][i] = new Square(4, i, null);
+            this[5][i] = new Square(5, i, null);
+            this[6][i] = new Square(6, i, new Pawn(false));
         }
 
-
-        content.appendChild(player1);
-        content.appendChild(boardDiv);
-        content.appendChild(player2);
-    }
-}
-
-function getSquareDiv(square, yBreakpoint, xBreakpoint) {
-    if (square.x === xBreakpoint) {
-        let p = document.createElement("p");
-        p.innerText = (square.y + 1).toString();
-        p.classList.add("columnNumbers");
-        square.appendChild(p);
+        this[7][0] = new Square(7, 0, new Rook(false));
+        this[7][1] = new Square(7, 1, new Knight(false));
+        this[7][2] = new Square(7, 2, new Bishop(false));
+        this[7][3] = new Square(7, 3, new Queen(false));
+        this[7][4] = new Square(7, 4, new King(false));
+        this[7][5] = new Square(7, 5, new Bishop(false));
+        this[7][6] = new Square(7, 6, new Knight(false));
+        this[7][7] = new Square(7, 7, new Rook(false));
     }
 
-    if (square.y === yBreakpoint) {
-        let p = document.createElement("p");
-        p.innerText = columns[square.x];
-        p.classList.add("rowNumbers");
-        square.appendChild(p);
-    }
+    show(rotation) {
+        if (rotation) {
+            this.reverseForEach((row, rowIndex) => row.forEach((col, colIndex) => {
+                if (colIndex === 0)
+                    col.appendChild(this.columnP[rowIndex]);
 
-    return square;
-}
+                if (rowIndex === 0)
+                    col.appendChild(this.rowP[colIndex]);
 
-function printBoard() {
-    let boardString = [""];
+                this.append(col);
+            }));
+            this.parentNode.prepend(player2);
+            this.parentNode.append(player1);
+        } else {
+            this.forEach((row, rowIndex) => row.reverseForEach((col, colIndex) => {
+                if (colIndex === 7)
+                    col.appendChild(this.columnP[rowIndex]);
 
-    for (let y = 7; y >= 0; y--) {
-        for (let x = 0; x < 8; x++) {
-            let piece = board[y][x].piece;
+                if (rowIndex === 7)
+                    col.appendChild(this.rowP[colIndex]);
 
-            if (piece === null) {
-                boardString.push("  ")
-                continue;
-            }
-
-            boardString.push(piece.isWhiteLetter + piece.getPieceLetter);
+                this.append(col);
+            }));
+            this.parentNode.prepend(player1);
+            this.parentNode.append(player2);
         }
-        boardString.push("\n")
     }
 
-    console.log(...boardString)
+    print() {
+        let boardString = [''];
+
+        this.reverseForEach((row) => boardString.push(row.join(' '), '\n'));
+
+        console.log(...boardString)
+    }
+
+    forEach(callback) {
+        for (let i = 0; i < this.length; i++) {
+            callback(this[i], i, this);
+        }
+    }
+
+    reverseForEach(callback) {
+        for (let i = this.length - 1; i >= 0; i--)
+            callback(this[i], i, this);
+    }
+
+    createP(className, text) {
+        let p = document.createElement('p');
+        p.className = className;
+        p.innerText = text;
+
+        return p;
+    }
 }
 
-//board[4][4].addPiece(new King(true));
+customElements.define('chess-board', Board);

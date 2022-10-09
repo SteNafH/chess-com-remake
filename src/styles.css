@@ -1,15 +1,15 @@
 :root {
     --background-color: rgb(49, 46, 43);
 
-    --black-square-color: linear-gradient(rgb(118, 150, 86), rgb(118, 150, 86));
-    --black-square-active-color: linear-gradient(rgb(186, 202, 43), rgb(186, 202, 43));
-    --black-square-hover-color: linear-gradient(rgb(207, 218, 196), rgb(207, 218, 196));
-    --black-square-active-hover-color: linear-gradient(rgb(231, 237, 181), rgb(231, 237, 181));
+    --black-square-color: rgb(118, 150, 86);
+    --black-square-active-color: rgb(186, 202, 43);
+    --black-square-hover-color: rgb(207, 218, 196);
+    --black-square-active-hover-color: rgb(231, 237, 181);
 
-    --white-square-color: linear-gradient(rgb(238, 238, 210), rgb(238, 238, 210));
-    --white-square-active-color: linear-gradient(rgb(246, 246, 105), rgb(246, 246, 105));
-    --white-square-hover-color: linear-gradient(rgb(249, 249, 239), rgb(249, 249, 239));
-    --white-square-active-hover-color: linear-gradient(rgb(252, 252, 203), rgb(252, 252, 203));
+    --white-square-color: rgb(238, 238, 210);
+    --white-square-active-color: rgb(246, 246, 105);
+    --white-square-hover-color: rgb(249, 249, 239);
+    --white-square-active-hover-color: rgb(252, 252, 203);
 
     --square-hint-color: rgba(0, 0, 0, .1);
 
@@ -60,7 +60,7 @@ body {
     justify-content: center;
     align-items: center;
     background-color: var(--background-color);
-    color: hsla(0,0%,100%,.65);
+    color: hsla(0, 0%, 100%, .65);
 }
 
 main {
@@ -124,7 +124,7 @@ chess-player {
 }
 
 chess-player p {
-    color: hsla(0,0%,100%,.4);
+    color: hsla(0, 0%, 100%, .4);
     font-size: calc(2vmin);
 }
 
@@ -164,7 +164,7 @@ chess-player > div > div {
     opacity: 1;
 }
 
-#board {
+chess-board {
     width: calc(80vmin);
     height: calc(80vmin);
     display: grid;
@@ -182,17 +182,25 @@ chess-square {
     width: 100%;
     position: relative;
     padding: calc(.5vmin);
-    background-clip: content-box, padding-box;
+    box-shadow: inset 0 0 0 calc(.5vmin);
 }
 
 chess-square.black {
+    color: var(--black-square-color);
+    background: var(--black-square-color);
+}
+
+chess-square.black p {
     color: rgb(238, 238, 210);
-    background-image: var(--black-square-color), var(--black-square-color);
 }
 
 chess-square.white {
+    color: var(--white-square-color);
+    background: var(--white-square-color);
+}
+
+chess-square.white p {
     color: rgb(118, 150, 86);
-    background-image: var(--white-square-color), var(--white-square-color);
 }
 
 /*Side numbers*/
@@ -295,27 +303,29 @@ chess-king.white {
 
 /*Hovers*/
 chess-square.black.hover {
-    background-image: var(--black-square-color), var(--black-square-hover-color);
+    color: var(--black-square-hover-color);
 }
 
 chess-square.white.hover {
-    background-image: var(--white-square-color), var(--white-square-hover-color);
+    color: var(--white-square-hover-color);
 }
 
 chess-square.black.currentMove, chess-square.black.previousMove {
-    background-image: var(--black-square-active-color), var(--black-square-active-color);
+    color: var(--black-square-active-color);
+    background-color: var(--black-square-active-color);
 }
 
 chess-square.white.currentMove, chess-square.white.previousMove {
-    background-image: var(--white-square-active-color), var(--white-square-active-color);
+    color: var(--white-square-active-color);
+    background-color: var(--white-square-active-color);
 }
 
 chess-square.black.currentMove.hover, chess-square.black.previousMove.hover {
-    background-image: var(--black-square-active-color), var(--black-square-active-hover-color)
+    color: var(--black-square-active-hover-color)
 }
 
 chess-square.white.currentMove.hover, chess-square.white.previousMove.hover {
-    background-image: var(--white-square-active-color), var(--white-square-active-hover-color)
+    color: var(--white-square-active-hover-color)
 }
 
 /*Promotion Menu*/

@@ -3,9 +3,11 @@ const player2 = new Player('../assets/images/players/black.webp', 'Zwart', false
 
 let playerTurn = true;
 let startingPlayer = true;
-
 let boardRotation = startingPlayer;
-showBoard();
+
+const board = new Board(player1, player2);
+document.getElementById('content').append(board);
+board.show(boardRotation);
 
 const squares = $('chess-square');
 
@@ -38,7 +40,7 @@ let previousMove;
 
 squares.sortable({
     connectWith: squares,
-    containment: $('#board'),
+    containment: $('chess-board'),
     cursor: "grabbing",
     tolerance: "pointer",
     start: function (e) {
@@ -241,7 +243,7 @@ function makeMove(prevPos, newPos, piece, move) {
 
     playerTurn = !playerTurn;
 
-    printBoard();
+    board.print();
 }
 
 function clearCurrentHints() {
@@ -304,7 +306,7 @@ function getKing(white) {
 function rotateBoard() {
     boardRotation = !boardRotation;
 
-    showBoard();
+    board.show(boardRotation);
 }
 
-printBoard();
+board.print();
